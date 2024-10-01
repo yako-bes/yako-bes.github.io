@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>yako-bes</title>
+    <meta name="robots" content="index,follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="yako-bes: Experience a delightful 8-bit snow animation on your screen. Perfect for retro game lovers!">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" as="style" onload="this.rel='stylesheet'">
+    <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap">
+    </noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" media="print" onload="this.media='all'">
+    <style>
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Press Start 2P", monospace;
+        font-size: 16px;
+      }
+      .center {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      h1 {
+        font-size: 2em;
+        display: inline-block;
+        padding-right: 5px;
+        border-right: 10px solid #fff;
+        animation: blink 1s infinite;
+      }
+      @media screen and (max-width: 370px) {
+        h1 {
+          font-size: 1.5em;
+          border-right: 4px solid #fff;
+        }
+      }
+      @keyframes blink {
+
+        0%,
+        50% {
+          border-right-color: transparent;
+        }
+
+        51%,
+        100% {
+          border-right-color: #fff;
+        }
+      }
+      canvas {
+        background: #000;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+    <img src="//sstatic1.histats.com/0.gif?4705536&101" alt="" border="0" style="width:0;height:0;">
+    <script src="/assets/js/main.js?v=1.0"></script>
+  <body translate="no">
+    <canvas id="snow"></canvas>
+    <div class="center">
+    <h1>yako-bes.github.io</h1>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js" defer></script>
+    <script>
+      var Snow = {
+        el: "#snow",
+        density: 10000,
+        maxHSpeed: 5,
+        minFallSpeed: 2,
+        canvas: null,
+        ctx: null,
+        particles: [],
+        mp: 1,
+        quit: false,
+        init() {
+          this.canvas = document.querySelector(this.el);
+          this.ctx = this.canvas.getContext("2d");
+          this.reset();
+          requestAnimationFrame(this.render.bind(this));
+          window.addEventListener("resize", this.reset.bind(this));
+        },
+        reset() {
+          this.w = window.innerWidth;
+          this.h = window.innerHeight;
+          this.canvas.width = this.w;
+          this.canvas.height = this.h;
+          this.particles = [];
+          this.mp = Math.ceil(this.w * this.h / this.density);
+          for (let i = 0; i < this.mp; i++) {
+            let size = Math.random() * 4 + 5;
+            this.particles.push({
+              x: Math.random() * this.w,
+              y: Math.random() * this.h,
+              w: size,
+              h: size,
+              vy: this.minFallSpeed + Math.random(),
+              vx: Math.random() * this.maxHSpeed - this.maxHSpeed / 2,
+              fill: "#ffffff"
+            });
+          }
+        },
+        render() {
+          this.ctx.clearRect(0, 0, this.w, this.h);
+          this.particles.forEach((p) => {
+            p.y += p.vy;
+            p.x += p.vx;
+            this.ctx.fillStyle = p.fill;
+            this.ctx.fillRect(p.x, p.y, p.w, p.h);
+            if (p.x > this.w + 5 || p.x < -5 || p.y > this.h) {
+              p.x = Math.random() * this.w;
+              p.y = -10;
+            }
+          });
+          if (!this.quit) {
+            requestAnimationFrame(this.render.bind(this));
+          }
+        },
+        destroy() {
+          this.quit = true;
+        }
+      };
+      Snow.init();
+    </script>
+  </body>
+</html>
